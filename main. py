@@ -1,0 +1,26 @@
+import os
+import requests
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+TOKEN = os.getenv("7867967915:AAGbonTr7qwcGvseVKVmkmybPSLCHOzRJQc")
+
+def start(update, context):
+    update.message.reply_text("Hi! I'm your AI bot 🤖. Ask me anything!")
+
+def chat(update, context):
+    user_msg = update.message.text
+    url = f"https://api.affiliateplus.xyz/api/chatbot?message={user_msg}&botname=AIBot&ownername=You"
+    res = requests.get(url)
+    reply = res.json().get("message")
+    update.message.reply_text(reply)
+
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, chat))
+    updater.start_polling()
+    updater.idle()
+
+if name == 'main':
+    main()
